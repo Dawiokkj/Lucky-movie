@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roleta de Filmes · Letterboxd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Libre+Franklin:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="sprocket-strip sprocket-strip--top" aria-hidden="true"></div>
+
+  <main class="stage">
+
+    <header class="marquee">
+      <p class="marquee__eyebrow">agora em cartaz</p>
+      <h1 class="marquee__title">Roleta de <span>Filmes</span></h1>
+      <p class="marquee__tagline">Cole o link do seu perfil e o link de uma lista do Letterboxd. A gente tira da roleta o que você já assistiu e sorteia o resto.</p>
+    </header>
+
+    <section class="ticket" id="form-section">
+      <form id="sortear-form" class="ticket__form">
+        <label for="link-usuario" class="ticket__label">Link (ou nome) do seu perfil</label>
+        <div class="ticket__row">
+          <input
+            type="text"
+            id="link-usuario"
+            name="usuario"
+            placeholder="https://letterboxd.com/seu-usuario"
+            required
+            autocomplete="off"
+          >
+        </div>
+
+        <label for="link-lista" class="ticket__label ticket__label--spaced">Link da lista</label>
+        <div class="ticket__row">
+          <input
+            type="url"
+            id="link-lista"
+            name="link"
+            placeholder="https://boxd.it/8HjM"
+            required
+            autocomplete="off"
+          >
+          <button type="submit" id="sortear-btn" class="ticket__button">
+            <span>Sortear</span>
+          </button>
+        </div>
+        <p class="ticket__hint" id="stats-hint"></p>
+      </form>
+    </section>
+
+    <section class="screening" id="resultado" aria-live="polite">
+
+      <div class="placeholder-card" id="placeholder-card">
+        <div class="placeholder-card__mark" aria-hidden="true">?</div>
+        <p class="placeholder-card__text">nenhum filme sorteado ainda</p>
+        <p class="placeholder-card__subtext">preencha os campos acima e aperte "sortear"</p>
+      </div>
+
+      <div class="reel" id="reel" hidden>
+        <div class="reel__track">
+          <div class="reel__frame"></div>
+          <div class="reel__frame"></div>
+          <div class="reel__frame"></div>
+          <div class="reel__frame"></div>
+          <div class="reel__frame"></div>
+          <div class="reel__frame"></div>
+        </div>
+        <p class="reel__label">girando o rolo de filme&hellip;</p>
+      </div>
+
+      <div class="alert" id="alert" hidden></div>
+
+      <article class="poster-card" id="poster-card" hidden>
+        <div class="curtain curtain--left" aria-hidden="true"></div>
+        <div class="curtain curtain--right" aria-hidden="true"></div>
+
+        <div class="poster-card__art">
+          <img id="poster-img" src="" alt="">
+        </div>
+
+        <div class="poster-card__info">
+          <h2 class="poster-card__title">
+            <span id="filme-titulo"></span>
+            <span class="poster-card__year" id="filme-ano"></span>
+          </h2>
+          <p class="poster-card__director">dirigido por <span id="filme-diretor"></span></p>
+          <p class="poster-card__synopsis" id="filme-sinopse"></p>
+          <a id="filme-link" class="poster-card__link" href="#" target="_blank" rel="noopener">
+            ver no Letterboxd &rarr;
+          </a>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+
+  <div class="sprocket-strip sprocket-strip--bottom" aria-hidden="true"></div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

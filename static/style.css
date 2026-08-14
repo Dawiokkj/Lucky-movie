@@ -1,0 +1,421 @@
+/* ---------------------------------------------------------------
+   Tokens
+   ----------------------------------------------------------------*/
+:root {
+  --bg: #170b0d;
+  --panel: #241014;
+  --panel-alt: #2f171b;
+  --panel-line: #4a2530;
+
+  --gold: #d1a54c;
+  --gold-bright: #f2c96d;
+  --cream: #f4e9d8;
+  --muted: #b89a86;
+  --error: #e0654a;
+
+  --font-display: "Bebas Neue", sans-serif;
+  --font-body: "Libre Franklin", sans-serif;
+  --font-serif: "Source Serif 4", serif;
+
+  --radius: 6px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+body {
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(209, 165, 76, 0.08), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---------------------------------------------------------------
+   Sprocket film-strip border (signature motif)
+   ----------------------------------------------------------------*/
+.sprocket-strip {
+  height: 22px;
+  width: 100%;
+  background-color: #0c0607;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--bg) 0px,
+    var(--bg) 10px,
+    #0c0607 10px,
+    #0c0607 26px
+  );
+  position: relative;
+}
+.sprocket-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 4px,
+    rgba(0,0,0,0.6) 4px,
+    rgba(0,0,0,0.6) 20px,
+    transparent 20px,
+    transparent 26px
+  );
+}
+
+/* ---------------------------------------------------------------
+   Layout
+   ----------------------------------------------------------------*/
+.stage {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+
+/* ---------------------------------------------------------------
+   Marquee header
+   ----------------------------------------------------------------*/
+.marquee { text-align: center; margin-bottom: 40px; }
+
+.marquee__eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 12px;
+}
+
+.marquee__title {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 9vw, 84px);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin: 0 0 18px;
+  color: var(--cream);
+  text-shadow: 0 0 24px rgba(242, 201, 109, 0.25);
+}
+.marquee__title span {
+  color: var(--gold-bright);
+}
+
+.marquee__tagline {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 46ch;
+  margin: 0 auto;
+}
+.marquee__tagline strong { color: var(--cream); font-weight: 600; }
+
+/* ---------------------------------------------------------------
+   Ticket-style form
+   ----------------------------------------------------------------*/
+.ticket {
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 36px;
+  position: relative;
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: var(--bg);
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ticket::before { left: -9px; }
+.ticket::after { right: -9px; }
+
+.ticket__label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.ticket__label--spaced {
+  margin-top: 18px;
+}
+
+.ticket__row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#link-lista {
+  flex: 1 1 240px;
+  background: var(--bg);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 13px 14px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+#link-lista:focus {
+  border-color: var(--gold);
+}
+#link-lista::placeholder { color: #6b4f45; }
+
+.ticket__button {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.06em;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: #241009;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0 28px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 2px 0 #8a6a2a;
+}
+.ticket__button:hover { transform: translateY(-1px); box-shadow: 0 3px 0 #8a6a2a; }
+.ticket__button:active { transform: translateY(1px); box-shadow: 0 1px 0 #8a6a2a; }
+.ticket__button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ticket__hint {
+  margin: 12px 2px 0;
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 1em;
+}
+
+/* ---------------------------------------------------------------
+   Placeholder ("?" piscando, antes de qualquer sorteio)
+   ----------------------------------------------------------------*/
+.placeholder-card {
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px dashed var(--panel-line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.placeholder-card__mark {
+  font-family: var(--font-display);
+  font-size: 88px;
+  line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(242, 201, 109, 0.35);
+  animation: mark-flicker 2.4s ease-in-out infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes mark-flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 18px rgba(242, 201, 109, 0.35); }
+  45% { opacity: 1; text-shadow: 0 0 26px rgba(242, 201, 109, 0.55); }
+  50% { opacity: 0.55; text-shadow: 0 0 6px rgba(242, 201, 109, 0.15); }
+  55% { opacity: 1; text-shadow: 0 0 26px rgba(242, 201, 109, 0.55); }
+}
+
+.placeholder-card__text {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  font-size: 18px;
+  color: var(--cream);
+  margin: 0 0 6px;
+}
+
+.placeholder-card__subtext {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------
+   Reel spinner (loading state)
+   ----------------------------------------------------------------*/
+.reel {
+  text-align: center;
+  padding: 30px 0;
+}
+.reel__track {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.reel__frame {
+  width: 44px;
+  height: 60px;
+  border: 2px solid var(--gold);
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--panel-alt),
+    var(--panel-alt) 6px,
+    var(--panel) 6px,
+    var(--panel) 12px
+  );
+  animation: reel-flicker 0.9s ease-in-out infinite;
+}
+.reel__frame:nth-child(2) { animation-delay: 0.1s; }
+.reel__frame:nth-child(3) { animation-delay: 0.2s; }
+.reel__frame:nth-child(4) { animation-delay: 0.3s; }
+.reel__frame:nth-child(5) { animation-delay: 0.4s; }
+.reel__frame:nth-child(6) { animation-delay: 0.5s; }
+
+@keyframes reel-flicker {
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.55; }
+  50% { transform: translateY(-6px) scaleY(1.06); opacity: 1; }
+}
+
+.reel__label {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  font-size: 16px;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------
+   Alert (errors / no result)
+   ----------------------------------------------------------------*/
+.alert {
+  background: var(--panel);
+  border: 1px solid var(--error);
+  color: var(--cream);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------
+   Poster result card, revealed like curtains opening
+   ----------------------------------------------------------------*/
+.poster-card {
+  position: relative;
+  display: flex;
+  gap: 26px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius);
+  padding: 26px;
+  overflow: hidden;
+  animation: card-rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  background: linear-gradient(90deg, #4a1620, #7a2233 60%, #4a1620);
+  z-index: 2;
+  animation: curtain-open 0.7s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+}
+.curtain--left { left: 0; transform-origin: left; }
+.curtain--right { right: 0; transform-origin: right; }
+
+@keyframes curtain-open {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.poster-card__art {
+  flex: 0 0 160px;
+}
+.poster-card__art img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--panel-line);
+  display: block;
+  background: var(--panel-alt);
+}
+
+.poster-card__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.poster-card__title {
+  font-family: var(--font-display);
+  font-size: 34px;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  margin: 0 0 6px;
+  color: var(--cream);
+}
+.poster-card__year {
+  color: var(--gold);
+  font-size: 24px;
+  margin-left: 8px;
+}
+
+.poster-card__director {
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+.poster-card__director span { color: var(--gold-bright); font-weight: 600; }
+
+.poster-card__synopsis {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--cream);
+  margin: 0 0 18px;
+}
+
+.poster-card__link {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--gold-bright);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-bright);
+  padding-bottom: 2px;
+  transition: opacity 0.15s ease;
+}
+.poster-card__link:hover { opacity: 0.75; }
+
+/* ---------------------------------------------------------------
+   Responsive
+   ----------------------------------------------------------------*/
+@media (max-width: 560px) {
+  .poster-card { flex-direction: column; }
+  .poster-card__art { flex-basis: auto; max-width: 180px; }
+  .ticket__row { flex-direction: column; }
+  .ticket__button { padding: 13px; }
+}
