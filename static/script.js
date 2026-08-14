@@ -29,7 +29,16 @@ function mostrarResultado(filme) {
   document.getElementById("poster-img").alt = filme.titulo || "Capa do filme";
   document.getElementById("filme-titulo").textContent = filme.titulo || "(sem título)";
   document.getElementById("filme-ano").textContent = filme.ano ? `(${filme.ano})` : "";
-  document.getElementById("filme-diretor").textContent = filme.diretor || "desconhecido";
+
+  const diretorWrapper = document.getElementById("filme-diretor-wrapper");
+  if (filme.diretor && filme.diretor.toLowerCase() !== "desconhecido") {
+    document.getElementById("filme-diretor").textContent = filme.diretor;
+    if (diretorWrapper) diretorWrapper.hidden = false;
+  } else {
+    document.getElementById("filme-diretor").textContent = "";
+    if (diretorWrapper) diretorWrapper.hidden = true;
+  }
+
   document.getElementById("filme-sinopse").textContent = filme.sinopse || "Sinopse não disponível.";
   document.getElementById("filme-link").href = filme.url || "#";
 

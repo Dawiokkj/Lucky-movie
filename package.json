@@ -1,0 +1,26 @@
+{
+  "name": "lucky-movie",
+  "version": "1.0.0",
+  "description": "App web da Roleta de Filmes do Letterboxd.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i ./static/input.css -o ./static/style.css --minify",
+    "watch:css": "tailwindcss -i ./static/input.css -o ./static/style.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dawiokkj/Lucky-movie.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dawiokkj/Lucky-movie/issues"
+  },
+  "homepage": "https://github.com/Dawiokkj/Lucky-movie#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}

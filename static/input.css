@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+[hidden] {
+  display: none !important;
+}
+
+@theme {
+  --color-cinema-bg: #12080a;
+  --color-cinema-panel: #200d12;
+  --color-cinema-panel-alt: #2a1218;
+  --color-cinema-border: #461d27;
+  
+  --color-gold-base: #d1a54c;
+  --color-gold-bright: #f4cf78;
+  --color-gold-dark: #8a6a2a;
+  --color-cream-base: #f7ede0;
+  --color-muted-base: #bda393;
+  --color-error-base: #e5533c;
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Libre Franklin', sans-serif;
+  --font-serif: 'Source Serif 4', serif;
+}
+
+/* Custom Utilities & Cinema Effects */
+@layer utilities {
+  .bg-radial-cinema {
+    background-image: 
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(242, 201, 109, 0.12), transparent 70%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px);
+  }
+}
+
+
+/* Ticket Notch Detail */
+.ticket-notch {
+  position: relative;
+}
+.ticket-notch::before,
+.ticket-notch::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #12080a;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid var(--color-cinema-border);
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.8);
+}
+.ticket-notch::before { left: -10px; }
+.ticket-notch::after { right: -10px; }
+
+/* Reel Spinner Flicker Animation */
+@keyframes reel-flicker {
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.55; }
+  50% { transform: translateY(-6px) scaleY(1.06); opacity: 1; }
+}
+
+.reel-frame-anim {
+  animation: reel-flicker 0.9s ease-in-out infinite;
+}
+
+/* Question Mark Flicker */
+@keyframes mark-flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 24px rgba(242, 201, 109, 0.4); }
+  45% { opacity: 1; text-shadow: 0 0 36px rgba(242, 201, 109, 0.7); }
+  50% { opacity: 0.4; text-shadow: 0 0 8px rgba(242, 201, 109, 0.1); }
+  55% { opacity: 1; text-shadow: 0 0 36px rgba(242, 201, 109, 0.7); }
+}
+
+.mark-flicker-anim {
+  animation: mark-flicker 2.4s ease-in-out infinite;
+}
+
+/* Curtain Reveal Animation (needed for JS dynamic insertion) */
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  background: linear-gradient(90deg, #4a1620, #802336 60%, #4a1620);
+  z-index: 20;
+  animation: curtain-open 0.7s cubic-bezier(0.6, 0, 0.2, 1) forwards;
+}
+.curtain--left { left: 0; transform-origin: left; }
+.curtain--right { right: 0; transform-origin: right; }
+
+@keyframes curtain-open {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* Poster Card Entrance */
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-rise-anim {
+  animation: card-rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
