@@ -52,7 +52,25 @@
 .ticket-notch::before { left: -10px; }
 .ticket-notch::after { right: -10px; }
 
-/* Reel Spinner Flicker Animation */
+/* Reel Spinner Flicker & Film Tape Animations */
+@keyframes reel-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-reel-spin {
+  animation: reel-spin 3.5s linear infinite;
+}
+
+@keyframes film-tape-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-film-tape-scroll {
+  animation: film-tape-scroll 4s linear infinite;
+}
+
 @keyframes reel-flicker {
   0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.55; }
   50% { transform: translateY(-6px) scaleY(1.06); opacity: 1; }

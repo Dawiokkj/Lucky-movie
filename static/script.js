@@ -8,6 +8,32 @@ const placeholderCard = document.getElementById("placeholder-card");
 const reel = document.getElementById("reel");
 const alertBox = document.getElementById("alert");
 const posterCard = document.getElementById("poster-card");
+const salvarCheckbox = document.getElementById("salvar-dados");
+
+// Carregar dados do localStorage se habilitado
+if (salvarCheckbox) {
+  const usuarioSalvo = localStorage.getItem("letterboxd_usuario");
+  const listaSalva = localStorage.getItem("letterboxd_lista");
+  const deveSalvar = localStorage.getItem("letterboxd_salvar") === "true";
+
+  if (deveSalvar) {
+    salvarCheckbox.checked = true;
+    if (usuarioSalvo) usuarioInput.value = usuarioSalvo;
+    if (listaSalva) linkInput.value = listaSalva;
+  }
+
+  salvarCheckbox.addEventListener("change", () => {
+    if (!salvarCheckbox.checked) {
+      localStorage.removeItem("letterboxd_usuario");
+      localStorage.removeItem("letterboxd_lista");
+      localStorage.setItem("letterboxd_salvar", "false");
+    } else {
+      localStorage.setItem("letterboxd_salvar", "true");
+      if (usuarioInput.value.trim()) localStorage.setItem("letterboxd_usuario", usuarioInput.value.trim());
+      if (linkInput.value.trim()) localStorage.setItem("letterboxd_lista", linkInput.value.trim());
+    }
+  });
+}
 
 function esconderTudo() {
   placeholderCard.hidden = true;
@@ -66,6 +92,12 @@ form.addEventListener("submit", async (evento) => {
   const usuario = usuarioInput.value.trim();
   const link = linkInput.value.trim();
   if (!usuario || !link) return;
+
+  if (salvarCheckbox && salvarCheckbox.checked) {
+    localStorage.setItem("letterboxd_usuario", usuario);
+    localStorage.setItem("letterboxd_lista", link);
+    localStorage.setItem("letterboxd_salvar", "true");
+  }
 
   esconderTudo();
   reel.hidden = false;
