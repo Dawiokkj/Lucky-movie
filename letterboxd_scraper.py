@@ -31,6 +31,21 @@ PAUSA_ENTRE_PAGINAS = 0.8  # segundos, para nao martelar o servidor
 TIMEOUT = 15  # segundos de timeout por requisicao
 
 
+def _parse_nota_letterboxd(texto: str | None) -> float | None:
+    """Converte o conteudo do meta twitter:data2 do Letterboxd (ex:
+    "4.52 out of 5") na nota numerica (escala 0-5). Retorna None se o
+    texto nao vier no formato esperado."""
+    if not texto:
+        return None
+    match = re.search(r"([\d.]+)\s*out of\s*5", texto)
+    if not match:
+        return None
+    try:
+        return float(match.group(1))
+    except ValueError:
+        return None
+
+
 def extrair_username(entrada_usuario: str, session) -> str:
     """Aceita tanto um nome de usuario puro ('Dawikkj') quanto um link
     completo do perfil ('https://letterboxd.com/Dawikkj/') e devolve o
@@ -126,6 +141,7 @@ class LetterboxdRoulette:
                 "diretor": "",
                 "sinopse": "",
                 "poster": "",
+                "nota_letterboxd": None,
                 "url": f"{BASE_URL}/film/{slug}/",
             }
 
@@ -143,6 +159,7 @@ class LetterboxdRoulette:
         poster = meta(prop="og:image")
         diretor = meta(name="twitter:data1")  # rotulado "Directed by"
         sinopse = meta(prop="og:description")
+        nota_letterboxd = _parse_nota_letterboxd(meta(name="twitter:data2"))  # rotulado "Average rating"
 
         m = re.match(r"^(.*)\s\((\d{4})\)\s*$", titulo_ano)
         if m:
@@ -157,8 +174,28 @@ class LetterboxdRoulette:
             "diretor": diretor,
             "sinopse": sinopse,
             "poster": poster,
+            "nota_letterboxd": nota_letterboxd,
             "url": f"{BASE_URL}/film/{slug}/",
         }
+
+    # ------------------------------------------------------------------
+    # NOTA DO LETTERBOXD PARA UM FILME VINDO DO TMDB (slug adivinhado)
+    # ------------------------------------------------------------------
+    def obter_nota_por_slug(self, slug: str) -> float | None:
+        """Tenta so a nota media do Letterboxd pra um slug adivinhado a
+        partir do titulo/ano de um filme do TMDB - usado no modo de
+        sorteio por filtros, que nao tem o slug real do Letterboxd.
+        Retorna None se a pagina nao existir ou a nota nao for encontrada
+        (o que e esperado quando o slug adivinhado nao bate certinho)."""
+        try:
+            resp = self.session.get(f"{BASE_URL}/film/{slug}/", timeout=TIMEOUT)
+        except Exception:
+            return None
+        if resp.status_code != 200:
+            return None
+        soup = BeautifulSoup(resp.text, "html.parser")
+        tag = soup.find("meta", attrs={"name": "twitter:data2"})
+        return _parse_nota_letterboxd(tag.get("content") if tag else None)
 
     # ------------------------------------------------------------------
     # SORTEIO COMPLETO

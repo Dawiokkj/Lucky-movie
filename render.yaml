@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: lucky-movie
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
+    envVars:
+      - key: TMDB_API_KEY
+        sync: false   # voce cola o valor no painel do Render (nao fica no repositorio)
+      - key: PYTHON_VERSION
+        value: 3.12.7

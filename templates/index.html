@@ -29,176 +29,257 @@
       </p>
     </header>
 
-    <!-- Ticket Form Section -->
-    <section class="ticket-notch bg-cinema-panel border border-cinema-border rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-sm relative overflow-hidden shrink-0" id="form-section">
-      <!-- Ambient lighting glow -->
-      <div class="absolute -top-24 -right-24 w-48 h-48 bg-gold-base/10 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Layout: coluna de formularios (3 blocos empilhados) + coluna de resultado -->
+    <div class="layout-grid">
 
-      <form id="sortear-form" class="relative z-10 space-y-2">
-        <div class="grid grid-cols-12 gap-3 items-end">
-          <div class="col-span-12">
-            <label for="link-usuario" class="block font-body text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-muted-base mb-1.5">
-              Seu Perfil no Letterboxd
-            </label>
-            <input
-              type="text"
-              id="link-usuario"
-              name="usuario"
-              placeholder="https://letterboxd.com/seu-usuario"
-              required
-              autocomplete="off"
-              class="w-full h-12 box-border bg-cinema-bg border border-cinema-border rounded-lg px-4 text-cream-base font-body text-sm sm:text-base placeholder:text-muted-base/40 focus:outline-none focus:border-gold-base focus:ring-1 focus:ring-gold-base transition duration-200 shadow-inner"
-            >
+      <!-- Coluna esquerda: formularios em blocos separados -->
+      <div class="coluna-form">
+        <form id="sortear-form" class="flex flex-col gap-4 sm:gap-6">
+
+          <!-- Bloco 1: Letterboxd (perfil + lista) -->
+          <div class="ticket-notch bg-cinema-panel border border-cinema-border rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-sm relative overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-48 h-48 bg-gold-base/10 rounded-full blur-3xl pointer-events-none"></div>
+            <h2 class="card-titulo relative z-10">Letterboxd</h2>
+            <div class="relative z-10 form-stack">
+              <div>
+                <label for="link-usuario" class="block font-body text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-muted-base mb-1.5">
+                  Seu Perfil no Letterboxd
+                </label>
+                <input
+                  type="text"
+                  id="link-usuario"
+                  name="usuario"
+                  placeholder="https://letterboxd.com/seu-usuario"
+                  required
+                  autocomplete="off"
+                  class="w-full h-12 box-border bg-cinema-bg border border-cinema-border rounded-lg px-4 text-cream-base font-body text-sm sm:text-base placeholder:text-muted-base/40 focus:outline-none focus:border-gold-base focus:ring-1 focus:ring-gold-base transition duration-200 shadow-inner"
+                >
+              </div>
+
+              <div>
+                <label for="link-lista" class="block font-body text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-muted-base mb-1.5">
+                  Link da Lista <span class="normal-case font-normal tracking-normal text-muted-base/70">(opcional)</span>
+                </label>
+                <input
+                  type="url"
+                  id="link-lista"
+                  name="link"
+                  placeholder="https://boxd.it/8HjM — deixe em branco pra sortear por filtros"
+                  autocomplete="off"
+                  class="w-full h-12 box-border bg-cinema-bg border border-cinema-border rounded-lg px-4 text-cream-base font-body text-sm sm:text-base placeholder:text-muted-base/40 focus:outline-none focus:border-gold-base focus:ring-1 focus:ring-gold-base transition duration-200 shadow-inner"
+                >
+              </div>
+            </div>
           </div>
 
-          <div class="col-span-10">
-            <label for="link-lista" class="block font-body text-[11px] sm:text-xs font-semibold tracking-[0.18em] uppercase text-muted-base mb-1.5">
-              Link da Lista
-            </label>
-            <input
-              type="url"
-              id="link-lista"
-              name="link"
-              placeholder="https://boxd.it/8HjM"
-              required
-              autocomplete="off"
-              class="w-full h-12 box-border bg-cinema-bg border border-cinema-border rounded-lg px-4 text-cream-base font-body text-sm sm:text-base placeholder:text-muted-base/40 focus:outline-none focus:border-gold-base focus:ring-1 focus:ring-gold-base transition duration-200 shadow-inner"
-            >
+          <!-- Bloco 2: TMDB (filtros, usados so quando o link da lista fica em branco) -->
+          <!-- Sem overflow-hidden aqui de proposito: e o que permite o
+               dropdown de generos "flutuar" para fora da caixa em vez de
+               ficar cortado nela. O brilho ambiente fica numa camada
+               propria com clipping, pra nao perder o cantinho arredondado. -->
+          <div class="ticket-notch ticket-notch--sem-recorte bg-cinema-panel border border-cinema-border rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-sm relative">
+            <div class="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+              <div class="absolute -top-24 -right-24 w-48 h-48 bg-gold-base/10 rounded-full blur-3xl"></div>
+            </div>
+            <h2 class="card-titulo relative z-10">TMDB</h2>
+
+            <div class="relative z-10 tmdb-filtros-stack">
+              <div>
+                <label class="filtro-label">Gêneros</label>
+                <div class="genero-dropdown" id="tmdb-generos-dropdown">
+                  <button type="button" class="genero-dropdown-btn" id="tmdb-generos-btn" aria-haspopup="listbox" aria-expanded="false">
+                    <span id="tmdb-generos-label">Qualquer gênero</span>
+                    <svg class="genero-dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </button>
+                  <div class="genero-dropdown-list" id="tmdb-generos" role="listbox" aria-multiselectable="true" hidden>
+                    Carregando gêneros...
+                  </div>
+                </div>
+              </div>
+
+              <div class="filtro-grid-2">
+                <div>
+                  <label for="tmdb-decada" class="filtro-label">Década</label>
+                  <select id="tmdb-decada" class="filtro-input">
+                    <option value="">Qualquer década</option>
+                    <option value="upcoming">Em breve</option>
+                    <option value="2020">2020s</option>
+                    <option value="2010">2010s</option>
+                    <option value="2000">2000s</option>
+                    <option value="1990">1990s</option>
+                    <option value="1980">1980s</option>
+                    <option value="1970">1970s</option>
+                    <option value="1960">1960s</option>
+                    <option value="1950">1950s</option>
+                    <option value="1940">1940s</option>
+                    <option value="1930">1930s</option>
+                    <option value="1920">1920s</option>
+                    <option value="1910">1910s</option>
+                    <option value="1900">1900s</option>
+                    <option value="1890">1890s</option>
+                    <option value="1880">1880s</option>
+                    <option value="1870">1870s</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="filtro-label">Nota mínima</label>
+                  <div class="star-input" id="tmdb-estrelas"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="col-span-2">
-            <button
-              type="submit"
-              id="sortear-btn"
-              class="w-full h-12 box-border border border-transparent font-display text-xl tracking-wider uppercase bg-gradient-to-b from-gold-bright to-gold-base text-cinema-bg font-bold px-4 rounded-lg shadow-md hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-150 flex items-center justify-center"
-            >
-              <span>Sortear</span>
-            </button>
-          </div>
-        </div>
+          <!-- Bloco 3: salvar dados + botao de sortear -->
+          <div class="ticket-notch bg-cinema-panel border border-cinema-border rounded-xl p-4 sm:p-6 shadow-2xl backdrop-blur-sm relative overflow-hidden">
+            <div class="relative z-10 form-stack">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <label for="salvar-dados" class="inline-flex items-center gap-3 cursor-pointer group select-none">
+                  <div class="relative flex items-center">
+                    <input
+                      type="checkbox"
+                      id="salvar-dados"
+                      class="sr-only peer"
+                    >
+                    <div class="w-9 h-5 bg-cinema-bg border border-cinema-border rounded-full peer-checked:bg-gold-base/20 peer-checked:border-gold-base transition-all duration-200 shadow-inner"></div>
+                    <div class="absolute left-1 w-3 h-3 bg-muted-base/70 rounded-full peer-checked:translate-x-4 peer-checked:bg-gold-bright peer-checked:shadow-[0_0_8px_rgba(244,207,120,0.8)] transition-all duration-200"></div>
+                  </div>
+                  <span class="font-body text-xs text-muted-base group-hover:text-cream-base transition-colors">
+                    Salvar dados neste navegador
+                  </span>
+                </label>
+                <p class="font-body text-xs text-gold-bright/90 min-h-[1.25rem]" id="stats-hint"></p>
+              </div>
 
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
-          <label for="salvar-dados" class="inline-flex items-center gap-3 cursor-pointer group select-none">
-            <div class="relative flex items-center">
-              <input
-                type="checkbox"
-                id="salvar-dados"
-                class="sr-only peer"
+              <button
+                type="submit"
+                id="sortear-btn"
+                class="btn-sortear"
               >
-              <div class="w-9 h-5 bg-cinema-bg border border-cinema-border rounded-full peer-checked:bg-gold-base/20 peer-checked:border-gold-base transition-all duration-200 shadow-inner"></div>
-              <div class="absolute left-1 w-3 h-3 bg-muted-base/70 rounded-full peer-checked:translate-x-4 peer-checked:bg-gold-bright peer-checked:shadow-[0_0_8px_rgba(244,207,120,0.8)] transition-all duration-200"></div>
+                Sortear
+              </button>
             </div>
-            <span class="font-body text-xs text-muted-base group-hover:text-cream-base transition-colors">
-              Salvar dados neste navegador
-            </span>
-          </label>
-          <p class="font-body text-xs text-gold-bright/90 min-h-[1.25rem]" id="stats-hint"></p>
-        </div>
-      </form>
-    </section>
+          </div>
 
-    <!-- Screening Results Area -->
-    <section id="resultado" aria-live="polite">
-
-      <!-- Placeholder Card -->
-      <div class="text-center p-6 sm:p-10 border border-dashed border-cinema-border/80 rounded-xl bg-cinema-panel/60 backdrop-blur-sm my-auto" id="placeholder-card">
-        <div class="font-display text-6xl sm:text-7xl text-gold-base mark-flicker-anim mb-2 select-none" aria-hidden="true">?</div>
-        <p class="font-display text-lg sm:text-xl tracking-wider text-cream-base uppercase mb-1">nenhum filme sorteado ainda</p>
-        <p class="font-body text-xs sm:text-sm text-muted-base">preencha os campos acima e aperte "sortear"</p>
+        </form>
       </div>
 
-      <!-- Reel Spinner (Loading State) -->
-      <div class="bg-cinema-panel/90 border border-cinema-border/80 rounded-xl p-6 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden w-full text-center my-auto" id="reel" hidden>
-        <!-- Ambient Gold Glow -->
-        <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-40 bg-gold-base/15 rounded-full blur-3xl pointer-events-none"></div>
+      <!-- Coluna direita: area de resultado -->
+      <div class="coluna-resultado">
+        <section id="resultado" aria-live="polite">
 
-        <div class="relative z-10 flex flex-col items-center">
-          
-          <!-- Spinning Cinema Projector Reel Icon -->
-          <div class="relative mb-5 flex justify-center items-center">
-            <div class="absolute w-20 h-20 bg-gold-bright/20 rounded-full blur-lg animate-pulse"></div>
-            <svg class="w-14 h-14 text-gold-bright animate-reel-spin drop-shadow-[0_0_10px_rgba(244,207,120,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5" />
-              <circle cx="12" cy="12" r="2.5" fill="currentColor" />
-              <circle cx="12" cy="6.5" r="1.5" fill="currentColor" />
-              <circle cx="12" cy="17.5" r="1.5" fill="currentColor" />
-              <circle cx="6.5" cy="12" r="1.5" fill="currentColor" />
-              <circle cx="17.5" cy="12" r="1.5" fill="currentColor" />
-              <circle cx="8.1" cy="8.1" r="1.2" fill="currentColor" />
-              <circle cx="15.9" cy="15.9" r="1.2" fill="currentColor" />
-              <circle cx="8.1" cy="15.9" r="1.2" fill="currentColor" />
-              <circle cx="15.9" cy="8.1" r="1.2" fill="currentColor" />
-            </svg>
+          <!-- Placeholder Card -->
+          <div class="text-center p-6 sm:p-10 border border-dashed border-cinema-border/80 rounded-xl bg-cinema-panel/60 backdrop-blur-sm my-auto" id="placeholder-card">
+            <div class="font-display text-6xl sm:text-7xl text-gold-base mark-flicker-anim mb-2 select-none" aria-hidden="true">?</div>
+            <p class="font-display text-lg sm:text-xl tracking-wider text-cream-base uppercase mb-1">nenhum filme sorteado ainda</p>
+            <p class="font-body text-xs sm:text-sm text-muted-base">preencha os campos ao lado e aperte "sortear"</p>
           </div>
 
-          <!-- Horizontal Scrolling Film Tape Strip -->
-          <div class="w-full max-w-md mx-auto relative overflow-hidden rounded-xl border border-cinema-border bg-cinema-bg/90 p-2.5 mb-4 shadow-inner">
-            <!-- Center Golden Viewfinder Marker -->
-            <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-12 border-2 border-gold-bright rounded-md shadow-[0_0_15px_rgba(244,207,120,0.6)] z-20 pointer-events-none bg-gold-bright/10">
-              <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-gold-bright"></div>
-            </div>
+          <!-- Reel Spinner (Loading State) -->
+          <div class="bg-cinema-panel/90 border border-cinema-border/80 rounded-xl p-6 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden w-full text-center my-auto" id="reel" hidden>
+            <!-- Ambient Gold Glow -->
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-40 bg-gold-base/15 rounded-full blur-3xl pointer-events-none"></div>
 
-            <!-- Film Strip Tape Moving Left -->
-            <div class="flex gap-2 w-[220%] animate-film-tape-scroll opacity-85">
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎬</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🍿</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">⭐</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎞️</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">📽️</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎟️</div>
-              <!-- Loop Set -->
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎬</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🍿</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">⭐</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎞️</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">📽️</div>
-              <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎟️</div>
+            <div class="relative z-10 flex flex-col items-center">
+
+              <!-- Spinning Cinema Projector Reel Icon -->
+              <div class="relative mb-5 flex justify-center items-center">
+                <div class="absolute w-20 h-20 bg-gold-bright/20 rounded-full blur-lg animate-pulse"></div>
+                <svg class="w-14 h-14 text-gold-bright animate-reel-spin drop-shadow-[0_0_10px_rgba(244,207,120,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5" />
+                  <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+                  <circle cx="12" cy="6.5" r="1.5" fill="currentColor" />
+                  <circle cx="12" cy="17.5" r="1.5" fill="currentColor" />
+                  <circle cx="6.5" cy="12" r="1.5" fill="currentColor" />
+                  <circle cx="17.5" cy="12" r="1.5" fill="currentColor" />
+                  <circle cx="8.1" cy="8.1" r="1.2" fill="currentColor" />
+                  <circle cx="15.9" cy="15.9" r="1.2" fill="currentColor" />
+                  <circle cx="8.1" cy="15.9" r="1.2" fill="currentColor" />
+                  <circle cx="15.9" cy="8.1" r="1.2" fill="currentColor" />
+                </svg>
+              </div>
+
+              <!-- Horizontal Scrolling Film Tape Strip -->
+              <div class="w-full max-w-md mx-auto relative overflow-hidden rounded-xl border border-cinema-border bg-cinema-bg/90 p-2.5 mb-4 shadow-inner">
+                <!-- Center Golden Viewfinder Marker -->
+                <div class="absolute inset-y-0 left-1/2 -translate-x-1/2 w-12 border-2 border-gold-bright rounded-md shadow-[0_0_15px_rgba(244,207,120,0.6)] z-20 pointer-events-none bg-gold-bright/10">
+                  <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-gold-bright"></div>
+                </div>
+
+                <!-- Film Strip Tape Moving Left -->
+                <div class="flex gap-2 w-[220%] animate-film-tape-scroll opacity-85">
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎬</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🍿</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">⭐</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎞️</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">📽️</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎟️</div>
+                  <!-- Loop Set -->
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎬</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🍿</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">⭐</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎞️</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">📽️</div>
+                  <div class="w-11 h-14 shrink-0 rounded bg-gradient-to-br from-cinema-panel-alt to-cinema-panel border border-cinema-border flex items-center justify-center text-gold-base text-sm shadow">🎟️</div>
+                </div>
+              </div>
+
+              <!-- Animated Status Heading & Subtitle -->
+              <h3 class="font-display text-2xl sm:text-3xl tracking-widest text-cream-base uppercase mb-1 drop-shadow">
+                Girando a Roleta
+              </h3>
+              <p class="font-serif text-xs sm:text-sm text-gold-bright/80 animate-pulse" id="reel-subtitle">
+                Cruzando a lista do Letterboxd com seus filmes assistidos...
+              </p>
+
             </div>
           </div>
 
-          <!-- Animated Status Heading & Subtitle -->
-          <h3 class="font-display text-2xl sm:text-3xl tracking-widest text-cream-base uppercase mb-1 drop-shadow">
-            Girando a Roleta
-          </h3>
-          <p class="font-serif text-xs sm:text-sm text-gold-bright/80 animate-pulse">
-            Cruzando a lista do Letterboxd com seus filmes assistidos...
-          </p>
+          <!-- Alert Error Box -->
+          <div class="bg-cinema-panel border border-error-base text-cream-base rounded-xl p-5 font-serif text-sm sm:text-base leading-relaxed shadow-lg my-auto" id="alert" hidden></div>
 
-        </div>
+          <!-- Poster Card (Result) -->
+          <article class="relative flex flex-col sm:flex-row gap-6 sm:gap-8 bg-cinema-panel border border-cinema-border rounded-xl p-5 sm:p-7 overflow-hidden shadow-2xl card-rise-anim my-auto" id="poster-card" hidden>
+            <div class="curtain curtain--left" aria-hidden="true"></div>
+            <div class="curtain curtain--right" aria-hidden="true"></div>
+
+            <div class="shrink-0 mx-auto sm:mx-0 w-36 sm:w-44 md:w-48">
+              <img id="poster-img" src="" alt="" class="w-full aspect-[2/3] object-cover rounded-lg border border-cinema-border bg-cinema-panel-alt shadow-lg">
+            </div>
+
+            <div class="flex-1 min-w-0 flex flex-col justify-between">
+              <div>
+                <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-tight text-cream-base mb-1.5">
+                  <span id="filme-titulo"></span>
+                  <span class="text-gold-base text-2xl sm:text-3xl ml-2 font-display" id="filme-ano"></span>
+                </h2>
+                <p class="font-body text-xs sm:text-sm font-semibold tracking-widest uppercase text-muted-base mb-3" id="filme-diretor-wrapper">
+                  dirigido por <span class="text-gold-bright" id="filme-diretor"></span>
+                </p>
+                <div class="star-display mb-3" id="filme-nota" hidden></div>
+                <p class="font-serif text-sm sm:text-base text-cream-base/90 leading-relaxed mb-4 line-clamp-4 md:line-clamp-6" id="filme-sinopse"></p>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+                <div id="filme-link-wrapper">
+                  <a id="filme-link" class="inline-flex items-center gap-2 font-body font-semibold text-sm text-gold-bright hover:text-gold-base border-b border-gold-bright hover:border-gold-base pb-0.5 transition duration-150" href="#" target="_blank" rel="noopener">
+                    ver no Letterboxd &rarr;
+                  </a>
+                </div>
+                <div id="filme-link-tmdb-wrapper">
+                  <a id="filme-link-tmdb" class="inline-flex items-center gap-2 font-body font-semibold text-sm text-gold-bright hover:text-gold-base border-b border-gold-bright hover:border-gold-base pb-0.5 transition duration-150" href="#" target="_blank" rel="noopener">
+                    ver no The Movie Database &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </section>
       </div>
 
-      <!-- Alert Error Box -->
-      <div class="bg-cinema-panel border border-error-base text-cream-base rounded-xl p-5 font-serif text-sm sm:text-base leading-relaxed shadow-lg my-auto" id="alert" hidden></div>
-
-      <!-- Poster Card (Result) -->
-      <article class="relative flex flex-col sm:flex-row gap-6 sm:gap-8 bg-cinema-panel border border-cinema-border rounded-xl p-5 sm:p-7 overflow-hidden shadow-2xl card-rise-anim my-auto" id="poster-card" hidden>
-        <div class="curtain curtain--left" aria-hidden="true"></div>
-        <div class="curtain curtain--right" aria-hidden="true"></div>
-
-        <div class="shrink-0 mx-auto sm:mx-0 w-36 sm:w-44 md:w-48">
-          <img id="poster-img" src="" alt="" class="w-full aspect-[2/3] object-cover rounded-lg border border-cinema-border bg-cinema-panel-alt shadow-lg">
-        </div>
-
-        <div class="flex-1 min-w-0 flex flex-col justify-between">
-          <div>
-            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl leading-tight text-cream-base mb-1.5">
-              <span id="filme-titulo"></span>
-              <span class="text-gold-base text-2xl sm:text-3xl ml-2 font-display" id="filme-ano"></span>
-            </h2>
-            <p class="font-body text-xs sm:text-sm font-semibold tracking-widest uppercase text-muted-base mb-3" id="filme-diretor-wrapper">
-              dirigido por <span class="text-gold-bright" id="filme-diretor"></span>
-            </p>
-            <p class="font-serif text-sm sm:text-base text-cream-base/90 leading-relaxed mb-4 line-clamp-4 md:line-clamp-6" id="filme-sinopse"></p>
-          </div>
-          <div>
-            <a id="filme-link" class="inline-flex items-center gap-2 font-body font-semibold text-sm text-gold-bright hover:text-gold-base border-b border-gold-bright hover:border-gold-base pb-0.5 transition duration-150" href="#" target="_blank" rel="noopener">
-              ver no Letterboxd &rarr;
-            </a>
-          </div>
-        </div>
-      </article>
-
-    </section>
+    </div>
 
   </main>
 
