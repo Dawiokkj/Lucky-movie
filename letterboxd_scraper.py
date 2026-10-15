@@ -73,10 +73,30 @@ class LetterboxdRoulette:
     # VALIDACAO DO USUARIO
     # ------------------------------------------------------------------
     def usuario_existe(self) -> bool:
-        resp = self.session.get(f"{BASE_URL}/{self.username}/", timeout=TIMEOUT)
-        if resp.status_code == 403:
+        self.ultimo_status = None
+        try:
+            resp = self.session.get(f"{BASE_URL}/{self.username}/", timeout=TIMEOUT)
+        except Exception:
             return False
+        self.ultimo_status = resp.status_code
         return resp.status_code == 200
+
+    def mensagem_usuario_indisponivel(self) -> str:
+        """Mensagem de erro que diferencia 'usuario nao existe' (404) de
+        'o Letterboxd barrou o servidor' (403/429), que e o que acontece
+        quando o app roda em hospedagem de datacenter."""
+        status = getattr(self, "ultimo_status", None)
+        if status == 404:
+            return f"Usuario '{self.username}' nao encontrado no Letterboxd."
+        if status in (403, 429):
+            return (
+                f"O Letterboxd bloqueou o acesso deste servidor (erro {status}). "
+                "Isso e comum quando o app roda em hospedagem online; o perfil "
+                f"'{self.username}' pode estar certo."
+            )
+        if status is None:
+            return "Nao consegui conectar ao Letterboxd agora. Tente de novo em instantes."
+        return f"O Letterboxd respondeu com erro {status} ao buscar o perfil '{self.username}'."
 
     # ------------------------------------------------------------------
     # RESOLUCAO DE LINK E EXTRACAO DE FILMES
@@ -203,7 +223,7 @@ class LetterboxdRoulette:
     def sortear(self, link_lista: str):
         """Retorna um dict com o resultado do sorteio ou um dict de erro."""
         if not self.usuario_existe():
-            return {"erro": f"Usuario '{self.username}' nao encontrado (ou perfil privado/bloqueio temporario)."}
+            return {"erro": self.mensagem_usuario_indisponivel()}
 
         filmes_lista = self.obter_filmes_da_lista(link_lista)
         if not filmes_lista:

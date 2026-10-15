@@ -78,9 +78,7 @@ def sortear():
 
     # ---- Modo 2: sorteio por filtros do TMDB (sem link de lista) ----
     if not roleta.usuario_existe():
-        return jsonify(
-            {"erro": f"Usuario '{username}' nao encontrado (ou perfil privado/bloqueio temporario)."}
-        ), 400
+        return jsonify({"erro": roleta.mensagem_usuario_indisponivel()}), 400
 
     filmes_assistidos = roleta.obter_filmes_assistidos()
 
